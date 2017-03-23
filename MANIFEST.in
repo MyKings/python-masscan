@@ -1,0 +1,5 @@
+include *.txt
+include CHANGELOG
+include Makefile
+include MANIFEST.in
+include example.py
