@@ -43,5 +43,5 @@ setup(
     url='https://github.com/MyKings/python-masscan',
     bugtrack_url='https://github.com/MyKings/python-masscan',
     description='This is a python class to use masscan and access scan results from python2',
-    long_description=open('README.md').read() + "\n" + open('CHANGELOG.md').read(),
+    # long_description=open('README.md').read() + "\n" + open('CHANGELOG.md').read(),
 )
