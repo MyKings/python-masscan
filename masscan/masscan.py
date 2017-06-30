@@ -391,8 +391,6 @@ class PortScanner(object):
 
         scan_result['scan'] = {}
 
-        self._dom_hosts = dom.findall('host')
-
         for dhost in dom.findall('host'):
             # host ip, mac and other addresses
             host = None
