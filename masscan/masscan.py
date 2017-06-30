@@ -349,6 +349,7 @@ class PortScanner(object):
             <host endtime="1490242775"><address addr="10.0.9.6" addrtype="ipv4"/><ports><port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="64"/></port></ports></host>
             <host endtime="1490242775"><address addr="10.0.9.12" addrtype="ipv4"/><ports><port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="64"/></port></ports></host>
             <host endtime="1490242776"><address addr="10.0.9.28" addrtype="ipv4"/><ports><port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="64"/></port></ports></host>
+            <host endtime="1498802982"><address addr="10.0.9.29" addrtype="ipv4"/><ports><port protocol="tcp" portid="80"><state state="open" reason="response" reason_ttl="48"/><service name="title" banner="401 - Unauthorized"></service></port></ports></host>
             <runstats>
                 <finished time="1490242786" timestr="2017-03-23 12:19:46" elapsed="13" />
                 <hosts up="10" down="0" total="10" />
@@ -390,6 +391,8 @@ class PortScanner(object):
 
         scan_result['scan'] = {}
 
+        self._dom_hosts = dom.findall('host')
+
         for dhost in dom.findall('host'):
             # host ip, mac and other addresses
             host = None
@@ -414,6 +417,7 @@ class PortScanner(object):
                 state = dport.find('state').get('state')
                 reason = dport.find('state').get('reason')
                 reason_ttl = dport.find('state').get('reason_ttl')
+                services = []
 
                 if not proto in list(scan_result['scan'][host].keys()):
                     scan_result['scan'][host][proto] = {}
@@ -421,8 +425,15 @@ class PortScanner(object):
                 scan_result['scan'][host][proto][port] = {
                     'state': state,
                     'reason': reason,
-                    'reason_ttl': reason_ttl
+                    'reason_ttl': reason_ttl,
                 }
+
+                for service in dhost.findall('ports/port/service'):
+                    services.append({
+                        'name': service.get('name'),
+                        'banner': service.get('banner'),
+                    })
+                scan_result['scan'][host][proto][port]['services'] = services
 
         self._scan_result = scan_result
         return scan_result
