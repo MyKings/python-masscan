@@ -2,6 +2,12 @@
 
 python-masscan is a python library which helps in using masscan port scanner. 
 
+## INSTALL
+
+```bash
+pip install python-masscan
+```
+
 ## USAGE
 
 ```python
