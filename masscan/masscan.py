@@ -73,7 +73,7 @@ class PortScanner(object):
 
     """
 
-    def __init__(self, masscan_search_path=('masscan', '/usr/bin/masscan', '/usr/local/bin/masscan', '/sw/bin/masscan', '/opt/local/bin/masscan')):
+    def __init__(self, masscan_search_path=('deps/c-masscan/bin/masscan','masscan', '/usr/bin/masscan', '/usr/local/bin/masscan', '/sw/bin/masscan', '/opt/local/bin/masscan')):
         """
         Initialize PortScanner module
 
@@ -104,6 +104,7 @@ class PortScanner(object):
         # 'Masscan version 1.0.3 ( https://github.com/robertdavidgraham/masscan )'
         # This is for Mac OSX. When idle3 is launched from the finder, PATH is not set so masscan was not found
         for masscan_path in masscan_search_path:
+            print(masscan_path)
             try:
                 if sys.platform.startswith('freebsd') \
                    or sys.platform.startswith('linux') \
@@ -364,7 +365,11 @@ class PortScanner(object):
 
         try:
             dom = ET.fromstring(self._masscan_last_output)
-        except Exception:
+
+        # Added exception for XML parse error in order to continue if a host isn't found
+        except ET.ParseError:
+            return
+        except:
             if len(masscan_err) > 0:
                 raise PortScannerError(masscan_err)
             else:
