@@ -18,6 +18,11 @@ logger = logging.getLogger(__file__)
 logging.basicConfig(format=FORMAT)
 logger.setLevel(logging.DEBUG)
 
+
+class NetworkConnectionError(Exception):
+    pass
+
+
 PORTS = "1,3-4,6-7,9,13,17,19-26,30,32-33,37,42-43,49,53,70,79-85,88-90,99-100,106,109-111,113,119,125,135,139,143-144," \
         "146,161,163,179,199,211-212,222,254-256,259,264,280,301,306,311,340,366,389,406-407,416-417,425,427,443-445,458," \
         "464-465,481,497,500,512-515,524,541,543-545,548,554-555,563,587,593,616-617,625,631,636,646,648,666-668,683,687," \
@@ -364,6 +369,10 @@ class PortScanner(object):
 
         try:
             dom = ET.fromstring(self._masscan_last_output)
+        except ET.ParseError:
+            if "found=0" in masscan_err:
+                raise NetworkConnectionError("network is unreachable.")
+            raise ET.ParseError
         except Exception:
             if len(masscan_err) > 0:
                 raise PortScannerError(masscan_err)
