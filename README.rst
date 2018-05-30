@@ -7,7 +7,7 @@ INSTALL
 --------
 
 .. bash
-  pip install python-masscan
+pip install python-masscan
 
 USAGE
 --------
