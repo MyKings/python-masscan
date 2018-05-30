@@ -3,16 +3,43 @@ python-masscan
 
 python-masscan is a python library which helps in using masscan port scanner. 
 
+.. image:: https://badge.fury.io/py/python-masscan.svg
+    :target: https://badge.fury.io/py/python-masscan
+
+.. image:: https://img.shields.io/badge/python-2.6|2.7-brightgreen.svg
+    :target: https://www.python.org/
+
+.. image:: https://img.shields.io/github/issues/MyKings/python-masscan.svg   
+    :alt: GitHub issues
+    :target: https://github.com/MyKings/python-masscan/issues
+
+
+.. image:: https://img.shields.io/github/forks/MyKings/python-masscan.svg
+    :alt: GitHub forks
+    :target: https://github.com/MyKings/python-masscan/network
+
+
+.. image:: https://img.shields.io/github/stars/MyKings/python-masscan.svg
+    :alt: GitHub stars
+    :target: https://github.com/MyKings/python-masscan/stargazers
+
+
+.. image:: https://img.shields.io/github/license/MyKings/python-masscan.svg
+    :alt: GitHub license
+    :target: https://github.com/MyKings/python-masscan/blob/master/LICENSE
+
+
 INSTALL
 --------
 
-.. bash
-pip install python-masscan
+.. code-block:: bash
+
+    $ pip install python-masscan
 
 USAGE
 --------
 
-.. code:: python
+.. code-block:: python
 
  import masscan
 
@@ -26,7 +53,7 @@ USAGE
 Result
 --------
 
-.. code:: json
+.. code-block:: json
 {
         "masscan": {
             "scanstats": {
