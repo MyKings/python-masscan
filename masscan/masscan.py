@@ -369,12 +369,10 @@ class PortScanner(object):
 
         try:
             dom = ET.fromstring(self._masscan_last_output)
-        except ET.ParseError:
+        except Exception:
             if "found=0" in masscan_err:
                 raise NetworkConnectionError("network is unreachable.")
-            raise ET.ParseError
-        except Exception:
-            if len(masscan_err) > 0:
+            if len(masscan_err_keep_trace) > 0:
                 raise PortScannerError(masscan_err)
             else:
                 raise PortScannerError(self._masscan_last_output)
