@@ -403,6 +403,7 @@ class PortScanner(object):
             host = None
             address_block = {}
             vendor_block = {}
+            endtime = dhost.get('endtime')
             for address in dhost.findall('address'):
                 addtype = address.get('addrtype')
                 address_block[addtype] = address.get('addr')
@@ -431,6 +432,7 @@ class PortScanner(object):
                     'state': state,
                     'reason': reason,
                     'reason_ttl': reason_ttl,
+                    'endtime': endtime,
                 }
 
                 for service in dhost.findall('ports/port/service'):
