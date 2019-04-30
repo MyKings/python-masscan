@@ -60,9 +60,7 @@ PORTS = "1,3-4,6-7,9,13,17,19-26,30,32-33,37,42-43,49,53,70,79-85,88-90,99-100,1
 
 
 def __scan_progressive__(self, hosts, ports, arguments, callback, sudo):
-    """
-    Used by PortScannerAsync for callback
-    """
+    """Used by PortScannerAsync for callback."""
     try:
         scan_data = self._nm.scan(hosts, ports, arguments, sudo)
     except PortScannerError:
@@ -73,19 +71,16 @@ def __scan_progressive__(self, hosts, ports, arguments, callback, sudo):
 
 
 class PortScanner(object):
-    """
-    PortScanner class allows to use masscan from python
-
-    """
+    """Class which allows to use masscan from Python."""
 
     def __init__(self, masscan_search_path=('masscan', '/usr/bin/masscan', '/usr/local/bin/masscan', '/sw/bin/masscan', '/opt/local/bin/masscan')):
         """
-        Initialize PortScanner module
+        Initialize the Port Scanner.
 
         * detects masscan on the system and masscan version
         * may raise PortScannerError exception if masscan is not found in the path
 
-        :param masscan_search_path: tupple of string where to search for masscan executable. Change this if you want to use a specific version of masscan.
+        :param masscan_search_path: tuple of string where to search for masscan executable. Change this if you want to use a specific version of masscan.
         :returns: nothing
 
         """
@@ -151,9 +146,7 @@ class PortScanner(object):
             raise PortScannerError('masscan program was not found in path')
 
     def __getitem__(self, host):
-        """
-        returns a host detail
-        """
+        """Return a host detail."""
         if sys.version_info[0] == 2:
             assert type(host) in (str, unicode), 'Wrong type for [host], should be a string [was {0}]'.format(type(host))
         else:
@@ -163,8 +156,8 @@ class PortScanner(object):
     @property
     def get_masscan_last_output(self):
         """
-        Returns the last text output of masscan in raw text
-        this may be used for debugging purpose
+        Return the last text output of masscan in raw text
+        this may be used for debugging purpose.
 
         :returns: string containing the last text output of masscan in raw text
         """
@@ -173,17 +166,16 @@ class PortScanner(object):
     @property
     def masscan_version(self):
         """
-        returns masscan version if detected (int version, int subversion)
-        or (0, 0) if unknown
+        Return the masscan version if detected (int version, int subversion)
+        or (0, 0) if unknown.
+
         :returns: masscan_version_number, masscan_subversion_number
         """
         return self._masscan_version_number, self._masscan_subversion_number, self._masscan_revised_number
 
     @property
     def all_hosts(self):
-        """
-        returns a sorted list of all hosts
-        """
+        """Return a sorted list of all hosts."""
         if not 'scan' in list(self._scan_result.keys()):
             return []
         listh = list(self._scan_result['scan'].keys())
@@ -193,7 +185,7 @@ class PortScanner(object):
     @property
     def command_line(self):
         """
-        returns command line used for the scan
+        Return command line used for the scan.
 
         may raise AssertionError exception if called before scanning
         """
@@ -205,7 +197,7 @@ class PortScanner(object):
     @property
     def scan_result(self):
         """
-        returns command line used for the scan
+        Return command line used for the scan.
 
         may raise AssertionError exception if called before scanning
         """
@@ -216,7 +208,7 @@ class PortScanner(object):
     @property
     def scaninfo(self):
         """
-        returns scaninfo structure
+        Return scaninfo structure.
         {'tcp': {'services': '22', 'method': 'connect'}}
 
         may raise AssertionError exception if called before scanning
@@ -226,7 +218,7 @@ class PortScanner(object):
     @property
     def scanstats(self):
         """
-        returns scanstats structure
+        Return the scanstats structure.
         {'uphosts': '3', 'timestr': 'Thu Jun  3 21:45:07 2010', 'downhosts': '253', 'totalhosts': '256', 'elapsed': '5.79'}
 
         may raise AssertionError exception if called before scanning
@@ -238,11 +230,11 @@ class PortScanner(object):
 
     def scan(self, hosts='127.0.0.1', ports=PORTS, arguments='', sudo=False):
         """
-        Scan given hosts
+        Scan given hosts.
 
-        May raise PortScannerError exception if masscan output was not xml
+        May raise PortScannerError exception if masscan output was not XML
 
-        Test existance of the following key to know
+        Test existence of the following key to know
         if something went wrong : ['masscan']['scaninfo']['error']
         If not present, everything was ok.
 
@@ -251,7 +243,7 @@ class PortScanner(object):
         :param arguments: string of arguments for masscan '-sU -sX -sC'
         :param sudo: launch masscan with sudo if True
 
-        :returns: scan_result as dictionnary
+        :returns: scan_result as dictionary
         """
         if sys.version_info[0] == 2:
             assert type(hosts) in (str, unicode), 'Wrong type for [hosts], should be a string [was {0}]'.format(type(hosts))  # noqa
@@ -319,14 +311,14 @@ class PortScanner(object):
 
     def analyse_masscan_xml_scan(self, masscan_xml_output=None, masscan_err='', masscan_err_keep_trace='', masscan_warn_keep_trace=''):
         """
-        Analyses NMAP xml scan ouput
+        Analyse the NMAP XML scan ouput.
 
         May raise PortScannerError exception if masscan output was not xml
 
         Test existance of the following key to know if something went wrong : ['masscan']['scaninfo']['error']
         If not present, everything was ok.
 
-        :param masscan_xml_output: xml string to analyse
+        :param masscan_xml_output: XML string to analyse
         :returns: scan_result as dictionnary
         """
 
@@ -446,9 +438,7 @@ class PortScanner(object):
         return scan_result
 
     def has_host(self, host):
-        """
-        returns True if host has result, False otherwise
-        """
+        """If host has result it returns True, False otherwise."""
         assert type(host) is str, 'Wrong type for [host], should be a string [was {0}]'.format(type(host))
         assert 'scan' in self._scan_result, 'Do a scan before trying to get result !'
 
@@ -461,12 +451,12 @@ class PortScanner(object):
 class PortScannerAsync(object):
     """
     PortScannerAsync allows to use masscan from python asynchronously
-    for each host scanned, callback is called with scan result for the host
+    for each host scanned, callback is called with scan result for the host.
 
     """
     def __init__(self):
         """
-        Initialize the module
+        Initialize the module.
 
         * detects masscan on the system and masscan version
         * may raise PortScannerError exception if masscan is not found in the path
@@ -525,8 +515,7 @@ class PortScannerAsync(object):
         self._process.start()
 
     def stop(self):
-        """
-        Stop the current scan process
+        """Stop the current scan process.
 
         """
         if self._process is not None:
@@ -611,15 +600,16 @@ class PortScannerYield(PortScannerAsync):
 
 
 class PortScannerError(Exception):
-    """
-    Exception error class for PortScanner class
+    """Exception error class for PortScanner class."""
 
-    """
     def __init__(self, value):
+        """Initialize the exception."""
         self.value = value
 
     def __str__(self):
+        """String representation of a value."""
         return repr(self.value)
 
     def __repr__(self):
+        """Representation of an exception."""
         return 'PortScannerError exception {0}'.format(self.value)
