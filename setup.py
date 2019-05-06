@@ -1,27 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os
 
-from distutils.core import setup, Extension
-
-masscan = Extension('masscan', sources=['masscan/masscan.py', 'masscan/__init__.py', 'masscan/example.py'])
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 from masscan import __version__
 from masscan import __author__
 
-# Install : python setup.py install
-# Register : python setup.py register
+here = os.path.abspath(os.path.dirname(__file__))
 
-#  platform = 'Unix',
-
+with open(os.path.join(here, 'README.rst'), encoding='utf-8') as readme_file:
+    long_description = readme_file.read()
 
 setup(
     name='python-masscan',
     version=__version__,
     author=__author__,
     author_email='xsseroot@gmail.com',
-    license='LICENSE',
+    license='GPLv3+',
     keywords="masscan, portscanner",
-    # Get more strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     platforms=[
         "Operating System :: OS Independent",
         ],
@@ -29,7 +29,8 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.6.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
@@ -42,7 +43,7 @@ setup(
         ],
     packages=['masscan'],
     url='https://github.com/MyKings/python-masscan',
-    bugtrack_url='https://github.com/MyKings/python-masscan',
-    description='This is a python class to use masscan and access scan results from python2',
-    # long_description=open('README.md').read() + "\n" + open('CHANGELOG.md').read(),
+    description='This is a Python module to use masscan and access scan '
+                'results',
+    long_description=long_description,
 )
