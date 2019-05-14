@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+"""Example to use python-masscan."""
 import sys
 
 import masscan

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+"""Init file for the masscan bindings."""
 from .masscan import *
 
 __author__ = 'MyKings (xsseroot@gmail.com)'
