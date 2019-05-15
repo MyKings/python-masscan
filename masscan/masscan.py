@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+"""Python Bindings to use masscan and access scan results."""
 import os
 import re
 import shlex
