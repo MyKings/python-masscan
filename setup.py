@@ -43,7 +43,6 @@ setup(
         ],
     packages=['masscan'],
     url='https://github.com/MyKings/python-masscan',
-    description='This is a Python module to use masscan and access scan '
-                'results',
     long_description=long_description,
+    long_description_content_type="text/markdown"
 )

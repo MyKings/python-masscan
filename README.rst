@@ -148,6 +148,15 @@ Result
         }
     }
 
+
+Contributors
+-------------
+
+ - [Matt Lebrun](https://github.com/cr8ivecodesmith)
+ - [Gonçalo Ribeiro](https://github.com/goncalor)
+ - [Fabian Affolter](https://github.com/fabaff)
+
+
 REFERENCE
 -------------
 https://bitbucket.org/xael/python-nmap/
