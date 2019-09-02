@@ -6,7 +6,7 @@ python-masscan is a python library which helps in using masscan port scanner.
 .. image:: https://badge.fury.io/py/python-masscan.svg
     :target: https://badge.fury.io/py/python-masscan
 
-.. image:: https://img.shields.io/badge/python-2.6|2.7-brightgreen.svg
+.. image:: https://img.shields.io/badge/python-2.7|3.7-brightgreen.svg
     :target: https://www.python.org/
 
 .. image:: https://img.shields.io/github/issues/MyKings/python-masscan.svg   

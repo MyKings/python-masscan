@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 """Python Bindings to use masscan and access scan results."""
+import logging
 import os
 import re
 import shlex
 import subprocess
 import sys
-import logging
-
-
-from xml.etree import ElementTree as ET
 from multiprocessing import Process
+from xml.etree import ElementTree as ET
 
+IS_PY2 = sys.version_info[0] == 2
 
 FORMAT = '[%(asctime)-15s] [%(levelname)s] [%(filename)s %(levelno)s line] %(message)s'
 logger = logging.getLogger(__file__)
@@ -72,7 +71,8 @@ def __scan_progressive__(self, hosts, ports, arguments, callback, sudo):
 class PortScanner(object):
     """Class which allows to use masscan from Python."""
 
-    def __init__(self, masscan_search_path=('masscan', '/usr/bin/masscan', '/usr/local/bin/masscan', '/sw/bin/masscan', '/opt/local/bin/masscan')):
+    def __init__(self, masscan_search_path=(
+    'masscan', '/usr/bin/masscan', '/usr/local/bin/masscan', '/sw/bin/masscan', '/opt/local/bin/masscan')):
         """
         Initialize the Port Scanner.
 
@@ -83,15 +83,15 @@ class PortScanner(object):
         :returns: nothing
 
         """
-        self._masscan_path = ''                # masscan path
+        self._masscan_path = ''  # masscan path
         self._scan_result = {}
-        self._masscan_version_number = 0       # masscan version number
-        self._masscan_subversion_number = 0    # masscan subversion number
-        self._masscan_revised_number = 0    # masscan revised number
+        self._masscan_version_number = 0  # masscan version number
+        self._masscan_subversion_number = 0  # masscan subversion number
+        self._masscan_revised_number = 0  # masscan revised number
         self._masscan_last_output = ''  # last full ascii masscan output
         self._args = ''
         self._scaninfo = {}
-        is_masscan_found = False       # true if we have found masscan
+        is_masscan_found = False  # true if we have found masscan
 
         self.__process = None
 
@@ -105,16 +105,18 @@ class PortScanner(object):
         for masscan_path in masscan_search_path:
             try:
                 if sys.platform.startswith('freebsd') \
-                   or sys.platform.startswith('linux') \
-                   or sys.platform.startswith('darwin'):
-                    p = subprocess.Popen([masscan_path, '-V'],
-                                         bufsize=10000,
-                                         stdout=subprocess.PIPE,
-                                         close_fds=True)
+                        or sys.platform.startswith('linux') \
+                        or sys.platform.startswith('darwin'):
+                    p = subprocess.Popen(
+                        [masscan_path, '-V'],
+                        bufsize=10000,
+                        stdout=subprocess.PIPE,
+                        close_fds=True)
                 else:
-                    p = subprocess.Popen([masscan_path, '-V'],
-                                         bufsize=10000,
-                                         stdout=subprocess.PIPE)
+                    p = subprocess.Popen(
+                        [masscan_path, '-V'],
+                        bufsize=10000,
+                        stdout=subprocess.PIPE)
 
             except OSError:
                 pass
@@ -125,8 +127,12 @@ class PortScanner(object):
             raise PortScannerError(
                 'masscan program was not found in path. PATH is : {0}'.format(os.getenv('PATH'))
             )
-
-        self._masscan_last_output = bytes.decode(p.communicate()[0])  # sav stdout
+        if IS_PY2:
+            self._masscan_last_output = bytes.decode(p.communicate()[0])  # sav stdout
+        else:
+            self._masscan_last_output = p.communicate()[0]
+            if isinstance(self._masscan_last_output, bytes):
+                self._masscan_last_output = self._masscan_last_output.decode('utf-8')
         for line in self._masscan_last_output.split(os.linesep):
             if regex.match(line):
                 is_masscan_found = True
@@ -146,8 +152,9 @@ class PortScanner(object):
 
     def __getitem__(self, host):
         """Return a host detail."""
-        if sys.version_info[0] == 2:
-            assert type(host) in (str, unicode), 'Wrong type for [host], should be a string [was {0}]'.format(type(host))
+        if IS_PY2:
+            assert type(host) in (str, unicode), 'Wrong type for [host], should be a string [was {0}]'.format(
+                type(host))
         else:
             assert type(host) is str, 'Wrong type for [host], should be a string [was {0}]'.format(type(host))
         return self._scan_result['scan'][host]
@@ -244,20 +251,27 @@ class PortScanner(object):
 
         :returns: scan_result as dictionary
         """
-        if sys.version_info[0] == 2:
-            assert type(hosts) in (str, unicode), 'Wrong type for [hosts], should be a string [was {0}]'.format(type(hosts))  # noqa
-            assert type(ports) in (str, unicode, type(None)), 'Wrong type for [ports], should be a string [was {0}]'.format(type(ports))  # noqa
-            assert type(arguments) in (str, unicode), 'Wrong type for [arguments], should be a string [was {0}]'.format(type(arguments))  # noqa
+        if IS_PY2:
+            assert type(hosts) in (str, unicode), 'Wrong type for [hosts], should be a string [was {0}]'.format(
+                type(hosts))  # noqa
+            assert type(ports) in (
+            str, unicode, type(None)), 'Wrong type for [ports], should be a string [was {0}]'.format(
+                type(ports))  # noqa
+            assert type(arguments) in (str, unicode), 'Wrong type for [arguments], should be a string [was {0}]'.format(
+                type(arguments))  # noqa
         else:
-            assert type(hosts) is str, 'Wrong type for [hosts], should be a string [was {0}]'.format(type(hosts))  # noqa
-            assert type(ports) in (str, type(None)), 'Wrong type for [ports], should be a string [was {0}]'.format(type(ports))  # noqa
-            assert type(arguments) is str, 'Wrong type for [arguments], should be a string [was {0}]'.format(type(arguments))  # noqa
+            assert type(hosts) is str, 'Wrong type for [hosts], should be a string [was {0}]'.format(
+                type(hosts))  # noqa
+            assert type(ports) in (str, type(None)), 'Wrong type for [ports], should be a string [was {0}]'.format(
+                type(ports))  # noqa
+            assert type(arguments) is str, 'Wrong type for [arguments], should be a string [was {0}]'.format(
+                type(arguments))  # noqa
 
         h_args = shlex.split(hosts)
         f_args = shlex.split(arguments)
 
         # Launch scan
-        args = [self._masscan_path, '-oX', '-'] + h_args + ['-p', ports]*(ports is not None) + f_args
+        args = [self._masscan_path, '-oX', '-'] + h_args + ['-p', ports] * (ports is not None) + f_args
 
         logger.debug('Scan parameters: "' + ' '.join(args) + '"')
         self._args = ' '.join(args)
@@ -265,18 +279,25 @@ class PortScanner(object):
         if sudo:
             args = ['sudo'] + args
 
-        p = subprocess.Popen(args,
-                             bufsize=100000,
-                             stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE
-                             )
+        p = subprocess.Popen(
+            args,
+            bufsize=100000,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
 
         # wait until finished
         # get output
         self._masscan_last_output, masscan_err = p.communicate()
-        self._masscan_last_output = bytes.decode(self._masscan_last_output)
-        masscan_err = bytes.decode(masscan_err)
+        if IS_PY2:
+            self._masscan_last_output = bytes.decode(self._masscan_last_output)
+            masscan_err = bytes.decode(masscan_err)
+        else:
+            if isinstance(self._masscan_last_output, bytes):
+                self._masscan_last_output = self._masscan_last_output.decode('utf-8')
+            if isinstance(masscan_err, bytes):
+                masscan_err = masscan_err.decode('utf-8')
 
         # If there was something on stderr, there was a problem so abort...  in
         # fact not always. As stated by AlenLPeacock :
@@ -296,7 +317,7 @@ class PortScanner(object):
                     rgw = regex_warning.search(line)
                     if rgw is not None:
                         # sys.stderr.write(line+os.linesep)
-                        masscan_warn_keep_trace.append(line+os.linesep)
+                        masscan_warn_keep_trace.append(line + os.linesep)
                     else:
                         # raise PortScannerError(masscan_err)
                         masscan_err_keep_trace.append(masscan_err)
@@ -308,7 +329,8 @@ class PortScanner(object):
             masscan_warn_keep_trace=masscan_warn_keep_trace
         )
 
-    def analyse_masscan_xml_scan(self, masscan_xml_output=None, masscan_err='', masscan_err_keep_trace='', masscan_warn_keep_trace=''):
+    def analyse_masscan_xml_scan(self, masscan_xml_output=None, masscan_err='', masscan_err_keep_trace='',
+                                 masscan_warn_keep_trace=''):
         """
         Analyse the NMAP XML scan ouput.
 
@@ -377,7 +399,7 @@ class PortScanner(object):
                 'uphosts': dom.find("runstats/hosts").get('up'),
                 'downhosts': dom.find("runstats/hosts").get('down'),
                 'totalhosts': dom.find("runstats/hosts").get('total')}
-            }
+        }
 
         # if there was an error
         if len(masscan_err_keep_trace) > 0:
@@ -453,6 +475,7 @@ class PortScannerAsync(object):
     for each host scanned, callback is called with scan result for the host.
 
     """
+
     def __init__(self):
         """
         Initialize the module.
@@ -463,7 +486,6 @@ class PortScannerAsync(object):
         """
         self._process = None
         self._nm = PortScanner()
-        return
 
     def __del__(self):
         """
@@ -478,9 +500,7 @@ class PortScannerAsync(object):
                 # Happens on python3.4
                 # when using PortScannerAsync twice in a row
                 pass
-
         self._process = None
-        return
 
     def scan(self, hosts='127.0.0.1', ports=None, arguments='', callback=None, sudo=False):
         """
@@ -494,22 +514,27 @@ class PortScannerAsync(object):
         :param callback: callback function which takes (host, scan_data) as arguments
         :param sudo: launch masscan with sudo if true
         """
-
-        if sys.version_info[0] == 2:
-            assert type(hosts) in (str, unicode), 'Wrong type for [hosts], should be a string [was {0}]'.format(type(hosts))
-            assert type(ports) in (str, unicode, type(None)), 'Wrong type for [ports], should be a string [was {0}]'.format(type(ports))
-            assert type(arguments) in (str, unicode), 'Wrong type for [arguments], should be a string [was {0}]'.format(type(arguments))
+        if IS_PY2:
+            assert type(hosts) in (str, unicode), 'Wrong type for [hosts], should be a string [was {0}]'.format(
+                type(hosts))
+            assert type(ports) in (
+            str, unicode, type(None)), 'Wrong type for [ports], should be a string [was {0}]'.format(type(ports))
+            assert type(arguments) in (str, unicode), 'Wrong type for [arguments], should be a string [was {0}]'.format(
+                type(arguments))
         else:
             assert type(hosts) is str, 'Wrong type for [hosts], should be a string [was {0}]'.format(type(hosts))
-            assert type(ports) in (str, type(None)), 'Wrong type for [ports], should be a string [was {0}]'.format(type(ports))
-            assert type(arguments) is str, 'Wrong type for [arguments], should be a string [was {0}]'.format(type(arguments))
+            assert type(ports) in (str, type(None)), 'Wrong type for [ports], should be a string [was {0}]'.format(
+                type(ports))
+            assert type(arguments) is str, 'Wrong type for [arguments], should be a string [was {0}]'.format(
+                type(arguments))
 
-        assert callable(callback) or callback is None, 'The [callback] {0} should be callable or None.'.format(str(callback))
+        assert callable(callback) or callback is None, 'The [callback] {0} should be callable or None.'.format(
+            str(callback))
 
         self._process = Process(
             target=__scan_progressive__,
             args=(self, hosts, ports, arguments, callback, sudo)
-            )
+        )
         self._process.daemon = True
         self._process.start()
 
@@ -519,7 +544,6 @@ class PortScannerAsync(object):
         """
         if self._process is not None:
             self._process.terminate()
-        return
 
     def wait(self, timeout=None):
         """
@@ -528,10 +552,10 @@ class PortScannerAsync(object):
         :param timeout: default = None, wait timeout seconds
 
         """
-        assert type(timeout) in (int, type(None)), 'Wrong type for [timeout], should be an int or None [was {0}]'.format(type(timeout))
+        assert type(timeout) in (
+        int, type(None)), 'Wrong type for [timeout], should be an int or None [was {0}]'.format(type(timeout))
 
         self._process.join(timeout)
-        return
 
     def still_scanning(self):
         """
@@ -560,7 +584,6 @@ class PortScannerYield(PortScannerAsync):
 
         """
         PortScannerAsync.__init__(self)
-        return
 
     def scan(self, hosts='127.0.0.1', ports=None, arguments='', sudo=False):
         """
@@ -571,14 +594,15 @@ class PortScannerYield(PortScannerAsync):
         :param hosts: string for hosts as masscan use it 'scanme.masscan.org' or '198.116.0-255.1-127' or '216.163.128.20/20'
         :param ports: string for ports as masscan use it '22,53,110,143-4564'
         :param arguments: string of arguments for masscan '-sU -sX -sC'
-        :param callback: callback function which takes (host, scan_data) as arguments
         :param sudo: launch masscan with sudo if true
 
         """
 
         assert type(hosts) is str, 'Wrong type for [hosts], should be a string [was {0}]'.format(type(hosts))
-        assert type(ports) in (str, type(None)), 'Wrong type for [ports], should be a string [was {0}]'.format(type(ports))
-        assert type(arguments) is str, 'Wrong type for [arguments], should be a string [was {0}]'.format(type(arguments))
+        assert type(ports) in (str, type(None)), 'Wrong type for [ports], should be a string [was {0}]'.format(
+            type(ports))
+        assert type(arguments) is str, 'Wrong type for [arguments], should be a string [was {0}]'.format(
+            type(arguments))
 
         for host in self._nm.listscan(hosts):
             try:
