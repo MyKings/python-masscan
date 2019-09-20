@@ -1,6 +1,9 @@
 Changelog
 =========
 
+## 2019/09/20 (v0.1.5)
+ - [bugfix] Fixed python2 installation
+
 ## 2019/09/01 (v0.1.4)
  - [bugfix] Better support for python3 #22
 
