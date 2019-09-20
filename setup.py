@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import io
 
 try:
     from setuptools import setup
@@ -16,10 +17,10 @@ IS_PY2 = sys.version_info[0] == 2
 here = os.path.abspath(os.path.dirname(__file__))
 
 if IS_PY2:
-    with open(os.path.join(here, 'README.rst')) as readme_file:
+    with io.open(os.path.join(here, 'README.rst')) as readme_file:
         long_description = readme_file.read()
 else:
-    with open(os.path.join(here, 'README.rst'), encoding='utf-8') as readme_file:
+    with io.open(os.path.join(here, 'README.rst'), encoding='utf-8') as readme_file:
         long_description = readme_file.read()
 
 setup(
