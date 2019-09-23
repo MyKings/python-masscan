@@ -54,7 +54,8 @@ Result
 --------
 
 .. code-block:: json
-{
+
+    {
         "masscan": {
             "scanstats": {
                 "uphosts": "6",
