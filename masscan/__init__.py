@@ -2,7 +2,8 @@
 """Init file for the masscan bindings."""
 from .masscan import *
 
+from .version import __version__
+
 __author__ = 'MyKings (xsseroot@gmail.com)'
-__version__ = '0.1.6'
 __last_modification__ = '2019.10.15'
 
