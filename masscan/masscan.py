@@ -11,10 +11,11 @@ from xml.etree import ElementTree as ET
 
 IS_PY2 = sys.version_info[0] == 2
 
-FORMAT = '[%(asctime)-15s] [%(levelname)s] [%(filename)s %(levelno)s line] %(message)s'
-logger = logging.getLogger(__file__)
-logging.basicConfig(format=FORMAT)
-logger.setLevel(logging.DEBUG)
+if __name__=="__main__":
+    FORMAT = '[%(asctime)-15s] [%(levelname)s] [%(filename)s %(levelno)s line] %(message)s'
+    logger = logging.getLogger(__file__)
+    logging.basicConfig(format=FORMAT)
+    logger.setLevel(logging.DEBUG)
 
 
 class NetworkConnectionError(Exception):
