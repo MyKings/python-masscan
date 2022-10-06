@@ -88,7 +88,7 @@ class PortScanner(object):
 
         """
         self._masscan_path = ''  # masscan path
-        self._scan_result = {"command_line": {}, "scan": []}
+        self._scan_result = {"command_line": {}, "scan": {}}
         self._masscan_version_number = 0  # masscan version number
         self._masscan_subversion_number = 0  # masscan subversion number
         self._masscan_revised_number = 0  # masscan revised number
@@ -163,9 +163,8 @@ class PortScanner(object):
         else:
             assert type(host) is str, 'Wrong type for [host], should be a string [was {0}]'.format(type(host))
         
-        for item in self._scan_result['scan']:
-            if item["ip"] == host:
-                return item
+        if host in self._scan_result['scan']:
+            return self._scan_result['scan'][host]
         return None
 
     @property
@@ -193,9 +192,7 @@ class PortScanner(object):
         """Return a sorted list of all hosts."""
         host_list = []
         if self._scan_result['scan']:
-            for item in self._scan_result['scan']:
-                if "ip" in item and item["ip"] not in host_list:
-                    host_list.append(item["ip"])
+            host_list = self._scan_result['scan'].keys()
         return host_list
 
     @property
@@ -215,7 +212,7 @@ class PortScanner(object):
 
         may raise AssertionError exception if called before scanning
         """
-        return self._scan_result
+        return json.dumps(self._scan_result)
 
     def scan(self, hosts='127.0.0.1', ports=PORTS, arguments='', sudo=False):
         """
@@ -306,7 +303,12 @@ class PortScanner(object):
                         # raise PortScannerError(masscan_err)
                         masscan_err_keep_trace.append(masscan_err)
         try:
-            self._scan_result["scan"] =  json.loads(self._masscan_last_output)
+            scan_result =  json.loads(self._masscan_last_output)
+            for item in scan_result:
+                if item["ip"] not in self._scan_result["scan"]:
+                    self._scan_result["scan"][item["ip"]] = []
+                self._scan_result["scan"][item["ip"]].extend(item["ports"])
+
         except ValueError as ex:
             pass
 
@@ -314,10 +316,8 @@ class PortScanner(object):
 
     def has_host(self, host):
         """If host has result it returns True, False otherwise."""
-        if self._scan_result['scan']:
-            for item in self._scan_result['scan']:
-                if "ip" in item and item["ip"] == host:
-                    return True
+        if self._scan_result['scan'] and host in self._scan_result['scan']:
+            return True
         return False
 
 
