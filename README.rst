@@ -56,98 +56,26 @@ Result
 .. code-block:: json
 
     {
-        "masscan": {
-            "scanstats": {
-                "uphosts": "6",
-                "timestr": "2017-03-23 18:09:28",
-                "downhosts": "0",
-                "totalhosts": "6",
-                "elapsed": "2"
+    "command_line": "masscan -oJ - 192.168.1.1 -p 80,1900",
+    "scan": {
+        "192.168.1.1": [
+            {
+                "status": "open",
+                "reason": "syn-ack",
+                "ttl": 64,
+                "port": 1900,
+                "proto": "tcp"
             },
-            "command_line": "masscan -oX - 172.0.8.78/24 -p 22,80,8080"
-        },
-        "scan": {
-            "172.0.8.222": {
-                "tcp": {
-                    "22": {
-                        "state": "open",
-                        "reason": "syn-ack",
-                        "reason_ttl": "64"
-                    },
-                    "80": {
-                        "state": "open",
-                        "reason": "syn-ack",
-                        "reason_ttl": "64"
-                    }
-                }
-            },
-            "172.0.8.205": {
-                "tcp": {
-                    "80": {
-                        "state": "open",
-                        "reason": "syn-ack",
-                        "reason_ttl": "128"
-                    }
-                }
-            },
-            "172.0.8.207": {
-                "tcp": {
-                    "8080": {
-                        "state": "open",
-                        "reason": "syn-ack",
-                        "reason_ttl": "128"
-                    }
-                }
-            },
-            "172.0.8.206": {
-                "tcp": {
-                    "8080": {
-                        "state": "open",
-                        "reason": "syn-ack",
-                        "reason_ttl": "128"
-                    }
-                }
-            },
-            "172.0.8.203": {
-                "tcp": {
-                    "22": {
-                        "state": "open",
-                        "reason": "syn-ack",
-                        "reason_ttl": "64"
-                    },
-                    "80": {
-                        "state": "open",
-                        "reason": "syn-ack",
-                        "reason_ttl": "64"
-                    },
-                    "8080": {
-                        "state": "open",
-                        "reason": "syn-ack",
-                        "reason_ttl": "64"
-                    }
-                }
-            },
-            "172.0.8.202": {
-                "tcp": {
-                    "22": {
-                        "state": "open",
-                        "reason": "syn-ack",
-                        "reason_ttl": "64"
-                    },
-                    "80": {
-                        "state": "open",
-                        "reason": "syn-ack",
-                        "reason_ttl": "64"
-                    },
-                    "8080": {
-                        "state": "open",
-                        "reason": "syn-ack",
-                        "reason_ttl": "64"
-                    }
-                }
+            {
+                "status": "open",
+                "reason": "syn-ack",
+                "ttl": 64,
+                "port": 80,
+                "proto": "tcp"
             }
-        }
+        ]
     }
+}
 
 
 Contributors
