@@ -13,12 +13,11 @@ except:
     print("Unexpected error:", sys.exc_info()[0])
     sys.exit(1)
 
-print("masscan version:", mas.masscan_version)
-mas.scan('127.0.0.1', ports='U:445,U:53')
-print("masscan command line:", mas.command_line)
-#print('maascan scaninfo: ', mas.scaninfo)
-#print('maascan scanstats: ', mas.scanstats)
+print("masscan version: {}".format(mas.masscan_version))
+mas.scan('192.168.1.1', ports='80,1900')
+print("masscan command line: {}".format(mas.command_line))
+print('maascan has_host: {}'.format(mas.has_host("192.168.1.1")))
 
 for host in mas.all_hosts:
-    print("Host: %s (%s)" % (host, mas[host]))
+    print("Host: %s %s" % (host, mas[host]))
 
