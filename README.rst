@@ -45,7 +45,7 @@ USAGE
 
 
   mas = masscan.PortScanner()
-  mas.scan('172.0.8.78/24', ports='22,80,8080', arguments='--max-rate 1000')
+  mas.scan('192.168.1.1', ports='22,1900', arguments='--max-rate 1000')
   print(mas.scan_result)
 
 
