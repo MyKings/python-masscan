@@ -7,6 +7,8 @@ import shlex
 import subprocess
 import sys
 import json
+import random
+import string
 
 from multiprocessing import Process
 
@@ -214,6 +216,28 @@ class PortScanner(object):
         """
         return json.dumps(self._scan_result)
 
+    def copy_hosts_to_file(self, h_args):
+        """
+        Copy hosts to file, due to argv size limitations
+        
+        :returns: temp_file as str
+        """
+        if sys.platform.startswith('win32'):
+            tmp_location = '%temp%\\'
+        else:
+            tmp_location = '/tmp/'
+
+        RANDOM_STRING_LENGHT = 32
+        temp_file_name = "".join(random.choice(string.ascii_letters) for i in range(RANDOM_STRING_LENGHT))
+        temp_file = tmp_location + temp_file_name
+
+        # Put all the hosts in the file
+        with open(temp_file, 'w') as f:
+            f.writelines(s + '\n' for s in h_args)
+
+        return temp_file
+
+
     def scan(self, hosts='127.0.0.1', ports=PORTS, arguments='', sudo=False):
         """
         Scan given hosts.
@@ -251,7 +275,7 @@ class PortScanner(object):
         f_args = shlex.split(arguments)
 
         # Launch scan
-        args = [self._masscan_path, '-oJ', '-'] + h_args + ['-p', ports] * (ports is not None) + f_args
+        args = [self._masscan_path, '-oJ', '-'] + ['-iL', self.copy_hosts_to_file(h_args)] + ['-p', ports] * (ports is not None) + f_args
 
         self._args = ' '.join(args)
 
